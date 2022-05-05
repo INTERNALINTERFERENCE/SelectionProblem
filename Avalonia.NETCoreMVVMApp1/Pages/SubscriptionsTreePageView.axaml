@@ -1,0 +1,115 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:pages="clr-namespace:Avalonia.NETCoreMVVMApp1.Pages"
+        xmlns:netCoreMvvmApp1="clr-namespace:Avalonia.NETCoreMVVMApp1"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Avalonia.NETCoreMVVMApp1.Pages.SubscriptionsTreePageView">
+    
+    <Window.Resources>
+        <netCoreMvvmApp1:LevelPaddingConverter x:Key="PaddingConverter"/>
+        <netCoreMvvmApp1:TreeValueConverter x:Key="TreeValueConverter"/>
+    </Window.Resources>
+    
+    <Window.Styles>
+        <Style Selector="ListBoxItem:pointerover">
+            <Setter Property="Background" Value="White"/>
+        </Style>
+        <Style Selector="ListBoxItem:selected">
+            <Setter Property="Background" Value="White"/>
+        </Style>
+        <Style Selector="ListBoxItem">
+            <Setter Property="Background" Value="White"/>
+        </Style>
+    </Window.Styles>
+    
+    <DockPanel>
+        <DockPanel Dock="Top">
+            <Menu x:Name="Menu" DockPanel.Dock="Top" Height="50" Background="#FAFAFA"/>
+        </DockPanel>
+        
+        <Grid>
+            <SplitView x:Name="SplitView" PanePlacement="Right" PaneBackground="#FAFAFA"
+                       OpenPaneLength="500" CompactPaneLength="38" DisplayMode="Inline" IsPaneOpen="True">
+                <DockPanel>
+                    <ListBox x:Name="Repeater"
+                             Items="{Binding TreeRoot.VisibleChildren}"
+                             SelectedItem="{Binding SelectedItem}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border Name="test" BorderBrush="Transparent" Background="Transparent" BorderThickness="1"
+                                        CornerRadius="1" Padding="{Binding Level, Converter={StaticResource PaddingConverter}}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Grid>
+                                            <Image Grid.Row="0" Width="15" Height="15" Source="/Assets/Icons/arrow_open.png"
+                                                   IsVisible="{Binding IsExpanded}"/>
+                                            <Image Grid.Row="0" Width="15" Height="15" Source="/Assets/Icons/arrow_close.png"
+                                                   IsVisible="{Binding !IsExpanded}"/>
+                                            <Rectangle IsVisible="{Binding MessagesCount, 
+                                                Converter={StaticResource TreeValueConverter} }" Fill="White" Grid.Row="0" Width="15" Height="15">
+                                            </Rectangle>
+                                        </Grid>
+                                        <!--todo: move styles to app.xaml-->
+                                        <StackPanel Orientation="Horizontal" Background="Transparent">
+                                            <Grid ColumnDefinitions="*,*">
+                                                <TextBlock Grid.Column="0" FontFamily="Roboto, Helvetica, Arial, sans-serif" 
+                                                           FontSize="13"  
+                                                           FontWeight="600" 
+                                                           Margin="3"
+                                                           Text="{Binding Part}"/>
+                                                <TextBlock Grid.Column="1" FontFamily="Roboto, Helvetica, Arial, sans-serif" 
+                                                           FontSize="13"  
+                                                           FontWeight="500" 
+                                                           Margin="3">
+                                                    <TextBlock.Text>
+                                                        <MultiBinding StringFormat="{} ({0} topics, {1} messages)">
+                                                            <Binding Path="TopicsCount"></Binding>
+                                                            <Binding Path="MessagesCount"></Binding>
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                            </Grid>
+                                            <Interaction.Behaviors>
+                                                <EventTriggerBehavior EventName="Tapped" SourceObject="{Binding #test}">
+                                                    <InvokeCommandAction Command="{Binding $parent[ListBox].DataContext.ChangeExpandedValue}"/>
+                                                </EventTriggerBehavior>
+                                            </Interaction.Behaviors>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+                
+                <SplitView.Pane>
+                    <Grid RowDefinitions="Auto,*" ColumnDefinitions="*,Auto" VerticalAlignment="Stretch">
+                        <DockPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+                            <ScrollViewer>
+                                <StackPanel Margin="10">
+                                    <pages:ReceivedApplicationMessageDetailsView
+                                        DataContext="{Binding SelectedItem.Details, ElementName=Repeater }" />
+                                    <Label Content="Publish" FontWeight="Bold" />
+                                    <Label Content="Topic" FontSize="10" FontWeight="Bold" />
+                                    <TextBox UseFloatingWatermark="False"
+                                             Text="{Binding Topic}" />
+                                    <Button Content="Publish" Background="#ECF0F1" Command="{Binding Publish}"></Button>
+                                    <TextBox UseFloatingWatermark="True"
+                                             FontWeight="Bold"
+                                             FontSize="10"
+                                             Classes="Outline"
+                                             MinHeight="200"
+                                             MaxHeight="400"
+                                             AcceptsReturn="True"
+                                             TextWrapping="Wrap"
+                                             Text="{Binding Payload}" />
+                                </StackPanel>
+                            </ScrollViewer>
+                        </DockPanel>
+                    </Grid>
+                </SplitView.Pane>
+            </SplitView>
+        </Grid>
+    </DockPanel>
+</Window>
