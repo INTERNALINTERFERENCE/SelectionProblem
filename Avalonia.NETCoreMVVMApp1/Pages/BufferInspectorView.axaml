@@ -30,6 +30,20 @@
                              TextWrapping="Wrap"
                              Text= "{Binding Payload}" />
                 </TabItem>
+                
+                <TabItem Header="UTF8">
+					
+                    <TextBox Name="HeaderText"  
+                             UseFloatingWatermark="True"
+                             FontWeight="Bold"
+                             FontSize="10"
+                             Classes="Outline"
+                             MinHeight="200"
+                             MaxHeight="400"
+                             AcceptsReturn="True"
+                             TextWrapping="Wrap"
+                             Text= "{Binding Utf8Content}"/>
+                </TabItem>
             </TabControl>
         </Border>
     </StackPanel>

@@ -54,18 +54,31 @@ namespace Avalonia.NETCoreMVVMApp1.Pages
         }
 
         public void ChangeExpandedValue() => 
-            _selectedItem.IsExpanded = !_selectedItem.IsExpanded;
+            _selectedItem!.IsExpanded = !_selectedItem.IsExpanded;
         
         
         private readonly MqttClientService _mqttClientService;
         
-        private Node _selectedItem;
+        private Node? _selectedItem;
+        private Node? _selectedItemUpdate;
+        private DateTime _dateUpdated;
         private Node TreeRoot { get; }
         
-        public Node SelectedItem
+        public Node? SelectedItem
         {
-            get => _selectedItem;
-            set => this.RaiseAndSetIfChanged(ref _selectedItem, value);
+            get => _selectedItemUpdate;
+            set
+            {
+                _selectedItemUpdate = value;
+                if ( value != null && ( value != _selectedItem 
+                                        || _dateUpdated != _selectedItem.Details.Timestamp ) )
+                {
+                    _selectedItem = value;
+                    SetAndRaise( ref _selectedItemUpdate, null );
+                    SetAndRaise( ref _selectedItemUpdate, value );
+                    _dateUpdated = value.Details.Timestamp;
+                }
+            }
         }
         public string? Title
         {

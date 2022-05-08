@@ -50,7 +50,7 @@ namespace Avalonia.NETCoreMVVMApp1.Services
         public async Task Subscribe( )
         {
             var topicFilter = new MqttTopicFilterBuilder()
-                .WithTopic( "/#" )
+                .WithTopic( "/merakimv/#" )
                 .Build();
 
             var subscribeOptions = new MqttClientSubscribeOptionsBuilder()

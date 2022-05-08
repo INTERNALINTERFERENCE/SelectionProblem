@@ -89,7 +89,7 @@
                             <ScrollViewer>
                                 <StackPanel Margin="10">
                                     <pages:ReceivedApplicationMessageDetailsView
-                                        DataContext="{Binding SelectedItem.Details, ElementName=Repeater }" />
+                                        DataContext="{Binding SelectedItem.Details }" />
                                     <Label Content="Publish" FontWeight="Bold" />
                                     <Label Content="Topic" FontSize="10" FontWeight="Bold" />
                                     <TextBox UseFloatingWatermark="False"
